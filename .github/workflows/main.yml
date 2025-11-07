@@ -1,0 +1,13 @@
+# ✏️ UPDATE STUDENT
+@app.route('/update/<int:student_id>', methods=['GET', 'POST'])
+def update_student(student_id):
+    for student in students:
+        if student['id'] == student_id:
+            if request.method == 'POST':
+                student['name'] = request.form['name']
+                student['roll'] = request.form['roll']
+                student['class'] = request.form['class']
+                student['email'] = request.form['email']
+                return redirect(url_for('home'))
+            return render_template('html', student=student)
+    return "Student not found", 404
