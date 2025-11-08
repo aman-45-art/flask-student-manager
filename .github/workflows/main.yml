@@ -3,22 +3,66 @@ name: Student Management Workflow
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # Step 2: Set up Python
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
 
+    # Step 3: Install dependencies
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    
+    # Step 4: Lint the code (check code style)
+    - name: Run lint checks with flake8
+      run: |
+        pip install flake8
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+    # Step 5: Run tests (pytest or unittest)
+    - name: Run tests
+      run: |
+        pip install pytest
+        pytest -v
+
+    # Step 6: Check code formatting (optional, using black)
+    - name: Check formatting with Black
+      run: |
+        pip install black
+        black --check .
+
+    # Step 7: Security check (optional)
+    - name: Run security checks with Bandit
+      run: |
+        pip install bandit
+        bandit -r .
+
+    # Step 8: Upload test results (optional)
+    - name: Upload pytest results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: pytest-results
+        path: ./test-reports/
+
+    # Step 9: Deploy (example for Python web apps)
+    # You can replace this with your hosting platform (Heroku, Render, etc.)
+    - name: Deploy to Render (example)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        echo "Deploying application..."
+        # Example: render deploy or custom script
