@@ -1,1 +1,2 @@
-requie
+flask
+flask_sqlalchemy
