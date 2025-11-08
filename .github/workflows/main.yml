@@ -1,13 +1,24 @@
-# ✏️ UPDATE STUDENT
-@app.route('/update/<int:student_id>', methods=['GET', 'POST'])
-def update_student(student_id):
-    for student in students:
-        if student['id'] == student_id:
-            if request.method == 'POST':
-                student['name'] = request.form['name']
-                student['roll'] = request.form['roll']
-                student['class'] = request.form['class']
-                student['email'] = request.form['email']
-                return redirect(url_for('home'))
-            return render_template('html', student=student)
-    return "Student not found", 404
+name: Student Management Workflow
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    
